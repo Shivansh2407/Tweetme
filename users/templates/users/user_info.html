@@ -1,0 +1,38 @@
+{% with username=user.username %}
+    <h1>{{ username }}</h1>
+    {% url 'users:detail' username=username as user_detail_url %}
+    {% if request.path != user_detail_url %}
+        <a class="btn btn-default" style="margin: 15px 15px 15px 0px;" href="{% url 'users:detail' username=username %}">View</a>
+    {% endif %}
+    {% if showFollowToggle and request.user != user %}
+        <button url='{% url "user-api:follow-toggle" username=username %}' username='{{ username }}' class="btn btn-info follow-toggle">
+            {% if is_following %}unfollow{% else %}follow{% endif %}
+        </button>
+    {% endif %}
+    <p><span class="info">Tweets: <span id="tweet-count">{{ user.tweet_set.count }}</span></span></p>
+    <p><span class="info">Followers: <span class="followed-by-count" username="{{ username }}">{{ user.followed_by.count }}</span></span></p>
+    <p><span class="info">Following: <span class="following-count" username="{{ username }}">{{ user.profile.following.count }}</span></span></p>
+    {% url 'home' as home_url %}
+    {% url 'tweets:search' as search_url %}
+    {% url 'all' as see_all_url %}
+    {% if request.path != home_url and request.path != search_url and request.path != see_all_url  %}
+        <hr />
+        <h3>Followed By <small><span class="followed-by-count" username="{{ username }}">{{ user.followed_by.count }}</span></small></h3>
+        <div id="followed-by">
+            {% for user_profile in user.followed_by.all %}
+                <a class="btn btn-link" href="{{ user_profile.get_absolute_url }}">{{ user_profile.user.username }}</a><br />
+            {% empty %}
+                <span class="info">Not followed by any users.</span>
+            {% endfor %}
+        </div>
+        <hr />
+        <h3>Following <small>{{ user.profile.following.count }}</small></h3>
+        {% for user in user.profile.following.all %}
+            <a class="btn btn-link" href="{{ user.profile.get_absolute_url }}">{{ user.username }}</a><br />
+        {% empty %}
+            <span class="info">Not following any users.</span>
+        {% endfor %}
+    {% else %}
+        <hr />
+    {% endif %}
+{% endwith %}

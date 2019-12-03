@@ -1,0 +1,6 @@
+<form action="{% if action_url %}{{ action_url }}{% endif %}" method="post" id="tweet-form">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="{{ btn_title }}" class="btn btn-primary pull-right" />
+    <span class='pull-right' style='margin: 10px;'><span id='tweetCharsLeft'>140</span> Left</span>
+    <span class="pull-right grey-color" style='margin: 10px 0px;'>cmd + enter to submit</span>
+</form>

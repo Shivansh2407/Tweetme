@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Edit Tweet{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            {% include 'tweet_form.html' with form=form btn_title='Update' %}
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+{{ block.super }}
+<script>
+    $(document).ready(function () {
+        initTweetForm();
+    });
+</script>
+{% endblock %}

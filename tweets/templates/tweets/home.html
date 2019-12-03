@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Tweetme{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-sm-3">
+        {% url 'all' as see_all_url %}
+        {% if not request.user.is_authenticated or request.path == see_all_url %}
+            <h3><span class="label label-default">Who to follow</span></h3>
+            {% for user_data in users_data %}
+                {% include 'users/user_info.html' with user=user_data.user showFollowToggle=True is_following=user_data.is_following %}
+            {% endfor %}
+        {% else %}
+            {% include 'users/user_info.html' with user=request.user showFollowToggle=False %}
+        {% endif %}
+    </div>
+    <div class="col-sm-9">
+        {% if not request.GET.q %}
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                    {% include 'tweet_form.html' with form=create_form btn_title='Tweet' %}
+                </div>
+            </div>
+            <hr />
+        {% endif %}
+        <div id="tweet-container">
+            <h4>Loading...</h4>
+        </div>
+        <button id="loadMore" class="btn btn-info" style="display: none;">Load More</button>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+{{ block.super }}
+<style>
+    #tweet-form {
+        margin: 15px;
+    }
+</style>
+<script>
+    $(document).ready(function() {
+        initTweetForm();
+
+        // load tweets
+        var url;
+        if ('{{ request.path }}' == '{% url "all" %}') {
+            url = '{% url "tweet-api:all" %}';
+        } else {
+            url = '{% url "tweet-api:list" %}';
+        }
+        var loadTweets = getLoadTweets(url);
+        {% if request.GET.q %}
+            loadTweets(true, '{{ request.GET.q }}');
+        {% else %}
+            loadTweets(true);
+        {% endif %}
+        $('#loadMore').click(function (event) {
+            event.preventDefault();
+            loadTweets(false);
+        });
+
+        // tweet creation
+        $('#tweet-form').submit(function (event) {
+            event.preventDefault();
+            {% if not request.user.is_authenticated %}
+                window.location.href = '{% url 'login' %}';
+                return;
+            {% endif %}
+
+            var tweetCharsLeft = $('#tweetCharsLeft');
+            if (Number(tweetCharsLeft.text()) < 0) {
+                // TOREFINE show error message of tweet too long
+                return;
+            }
+            $.ajax({
+                'url': '/api/tweets/create/',
+                'method': 'POST',
+                'data': $(this).serialize(),
+                'success': function (data) {
+                    loadTweets(true);
+                    tweetCharsLeft.text(tweetCharsLimit);  // reset it
+
+                    // add tweet count
+                    var originalTweetCount = Number($('#tweet-count').text());
+                    $('#tweet-count').text(originalTweetCount + 1);
+                },
+                'error': function (data) {
+                    console.log('error:');
+                    console.log(data);
+                }
+            });
+        });
+
+        $('.follow-toggle').click(function () {
+            {% if request.user.is_authenticated %}
+                toggleFollow($(this).attr('url'));
+            {% else %}
+                window.location.href = '{% url 'login' %}';
+            {% endif %}
+        });
+    });
+</script>
+{% endblock %}
+

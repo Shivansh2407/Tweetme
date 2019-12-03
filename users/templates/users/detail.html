@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}{{ object.username }}{{ block.super }}{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-3">
+            {% include 'users/user_info.html' with user=object showFollowToggle=True is_following=is_following %}
+        </div>
+        <div class="col-sm-9">
+            <div id="tweet-container">
+                <h4>Loading...</h4>
+            </div>
+            <button id="loadMore" class="btn btn-info" style="display: none;">Load More</button>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+{{ block.super }}
+<script>
+$(document).ready(function () {
+    var loadTweets = getLoadTweets('{% url "tweet-api:user-tweets" username=object.username %}');
+    loadTweets(true);
+    $('#loadMore').click(function (event) {
+        event.preventDefault();
+        loadTweets(false);
+    });
+
+    {% if object == request.user %}
+        $('.follow-toggle').hide();
+        return;
+    {% endif %}
+    $('.follow-toggle').click(function () {
+        {% if request.user.is_authenticated %}
+            toggleFollow('{% url "user-api:follow-toggle" username=object.username %}');
+        {% else %}
+            window.location.href = '{% url 'login' %}';
+        {% endif %}
+    });
+});
+</script>
+{% endblock %}

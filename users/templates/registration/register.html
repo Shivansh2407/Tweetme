@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Register{{ block.super }}{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function () {
+       $('#form input').addClass('form-control');
+       $('#form input:text:first').focus();
+    });
+</script>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-sm-4 col-sm-offset-4">
+        <form id="form" action="" method="post">{% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Register" class="btn btn-primary" />
+        </form>
+    </div>
+</div>
+{% endblock %}
