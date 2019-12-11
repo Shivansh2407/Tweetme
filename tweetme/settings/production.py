@@ -8,7 +8,7 @@ SECRET_KEY =')_3sp#ux^9bas4!u*krx*m@f_wwf7*u^t1_ivsl@x$5sew0rp*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['octrixtweetapp.herokuapp.com']
+ALLOWED_HOSTS = ['octrixtweetapp.herokuapp.com','127.0.0.1']
 
 
 # Database
@@ -20,22 +20,8 @@ DATABASES = {
 }
 
 
+
 # Static files (CSS, JavaScript, Images)
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-             'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
-        },
-    },
-}
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static-serve')
