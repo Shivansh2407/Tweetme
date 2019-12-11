@@ -10,3 +10,6 @@ A twitter like social microblogging platform based on Django and Django REST Fra
 - Browse your tweets and tweets from your following on your wall
 - Browse all tweets and all users on one page
 - Redirect all HTTP requests to HTTPS
+
+
+See the Heroku APP here : https://octrixtweetapp.herokuapp.com/
