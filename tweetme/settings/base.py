@@ -15,7 +15,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 import os
-
+import dj_database_url
 # Build paths inside the project like this: os.path.join(PROJECT_ROOT, ...)
 from django.urls import reverse_lazy
 
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -109,3 +110,5 @@ STATICFILES_DIRS = (
 LOGIN_URL = reverse_lazy('login')
 LOGIN_REDIRECT_URL = reverse_lazy('home')
 LOGOUT_REDIRECT_URL = reverse_lazy('home')
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
